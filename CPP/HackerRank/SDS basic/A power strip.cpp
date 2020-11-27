@@ -1,7 +1,9 @@
-https://www.acmicpc.net/problem/1700
+// https://www.acmicpc.net/problem/1700
 
-#include <vector>
 #include <iostream>
+#include <vector>
+
+using namespace std;
 
 int HasPlugged(std::vector<int> sockets, int item);
 int main()
@@ -13,7 +15,7 @@ int main()
 	for (int i = 1; i <= k; ++i)
 		std::cin >> items[i];
 
-	// plug in unique consents. 
+	// plug in unique consents.
 	// lets say sockets : 3 and appliances num = 1, 1, 1, 2, 3
 	// then plug in 1 2 3, not 1 1 1.
 	std::vector<int> sockets(n + 1);
@@ -26,14 +28,12 @@ int main()
 			break;
 	}
 
-
 	int plugOutCounter(0);
 	for (int i = 1; i <= k; ++i)
 	{
 		// skip if the appliance has already plugged in
 		if (HasPlugged(sockets, items[i]))
 			continue;
-
 
 		std::vector<bool> hasPlugged(n + 1, false);
 		int socketCounter(0);
