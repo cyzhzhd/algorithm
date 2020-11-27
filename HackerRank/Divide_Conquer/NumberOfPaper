@@ -1,0 +1,67 @@
+https://www.acmicpc.net/problem/1780
+
+#include <iostream>
+#include <vector>
+
+int negative(0);
+int zero(0);
+int positive(0);
+
+bool ShouldDivide(int ** matrix, int row, int col, int size)
+{
+	bool isSame(true);
+	for (int i = row; i < row + size; ++i)
+	{
+		for (int j = col; j < col + size; ++j)
+		{
+			if (matrix[row][col] != matrix[i][j]) // if any elements in the matrix are different with others, set isSame to false
+				isSame = false;
+		}
+	}
+	return isSame;
+}
+
+void DivideIntoNine(int** matrix, int row, int col, int size)
+{
+	if (ShouldDivide(matrix, row, col, size)) // if true, count +1
+	{
+		if (matrix[row][col] == -1) negative++;
+		else if (matrix[row][col] == 0) zero++;
+		else if (matrix[row][col] == 1) positive++;
+	}
+	else // if false, divide the paper
+	{
+		size /= 3; // Divide paper into nine pieces.
+		for (int i = 0; i < 3; ++i)
+		{
+			for (int j = 0; j < 3; ++j)
+			{
+				DivideIntoNine(matrix, row + i * size, col + j * size, size);
+			}
+		}
+	}
+}
+
+int main()
+{
+	int n(0); // size of paper = 3^n;
+	std::cin >> n;
+	int** paper = new int* [n];
+	for (int i = 0; i < n; ++i)
+	{
+		paper[i] = new int[n];
+	}
+
+	for (int i = 0; i < n; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+		{
+			std::cin >> paper[i][j];
+		}
+	}
+
+	DivideIntoNine(paper, 0, 0, n);
+	std::cout << negative << std::endl;
+	std::cout << zero << std::endl;
+	std::cout << positive << std::endl;
+}

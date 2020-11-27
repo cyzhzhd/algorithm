@@ -1,0 +1,60 @@
+https://www.hackerrank.com/challenges/sherlock-and-valid-string/problem
+
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <vector>
+
+template <typename T>
+std::vector<int> CountEachElements(T object, int length)
+{
+	std::sort(object.begin(), object.end());
+	std::vector<int> counts;
+	int count(1);
+	for (int i = 0; i < length - 1; ++i)
+	{
+		if (object[i] == object[i + 1])
+		{
+			count++;
+		}
+		else
+		{
+			counts.push_back(count);
+			count = 1;
+		}
+	}
+	return counts;
+}
+
+int main()
+{
+	std::string str;
+	std::cin >> str;
+
+	str += "{"; // to count a number of each characters
+	std::vector<int> counts = CountEachElements(str, str.length());
+
+	counts.push_back(999); // to count a number of each counts
+	std::vector<int> counts2 = CountEachElements(counts, counts.size());
+
+
+	std::sort(counts.begin(), counts.end());
+	auto unique = std::unique(counts.begin(), counts.end());
+	counts.erase(unique, counts.end());
+
+	bool isCharacterSingle = (counts[0] == 1 && counts2[0] == 1);
+	bool removable = (abs(counts[0] - counts[1]) == 1 && (counts2[0] == 1 || counts2[1] == 1));
+	if (counts2.size() > 2)
+		std::cout << "NO" << std::endl;
+	else if (counts2.size() == 2)
+	{
+		if (isCharacterSingle || removable)
+			std::cout << "YES" << std::endl;
+		else
+			std::cout << "NO" << std::endl;
+	}
+	else
+	{
+		std::cout << "YES" << std::endl;
+	}
+}

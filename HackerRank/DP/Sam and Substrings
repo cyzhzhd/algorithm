@@ -1,0 +1,112 @@
+https://www.hackerrank.com/challenges/sam-and-substrings/problem
+
+
+First Try
+
+// Abort() error occurs on line 23
+// std::stod throws the exception std::out_of_range if the value that it parsed from the string it outside the range of values that double can hold.
+// The largest value that a typical double implementation can hold is roughly 300 digits long.
+// Also, in general, floating-point values are not able to represent integers exactly. Therefore it is pretty pointless to do the modulo operation on the double.
+
+#include <string>
+#include <iostream>
+#include <vector>
+double const modulo = 1000000007;
+
+int main()
+{
+    std::string n("");
+    std::cin >> n;
+    long sum(0);
+    std::vector<std::string> newlyAddedSubstring;
+
+    for (auto i : n)
+    {
+        for (auto &j : newlyAddedSubstring)
+        {
+            j += i;
+            long d = std::fmod(std::stod(j), modulo);
+            sum = std::fmod(sum + d, modulo);
+        }
+        newlyAddedSubstring.push_back(std::string(1, i)); 
+        newlyAddedSubstring.back();
+        sum = std::fmod(sum + (i - '0'), modulo);
+    }
+    std::cout << sum << std::endl;
+}
+
+
+
+
+
+
+Second Try
+
+// O(N^2) does not execute within the time limits
+// need to make it at least O(nlogn)
+#include <string>
+#include <iostream>
+#include <vector>
+long const modulo = 1000000007;
+
+int main()
+{
+	std::string n("");
+	std::cin >> n;
+	long sum(0);
+	std::vector<long> newlyAddedSubstring;
+
+	for (auto i : n)
+	{
+		int currentDigit = i - '0';
+		for (auto &j : newlyAddedSubstring)
+		{
+			j = (j * 10 + currentDigit) % modulo;
+			sum = std::fmod(sum + j, modulo);
+		}
+		newlyAddedSubstring.push_back(currentDigit);
+		newlyAddedSubstring.back();
+		sum = std::fmod(sum + (currentDigit), modulo);
+	}
+	std::cout << sum << std::endl;
+}
+
+
+
+Last try
+
+#include <string>
+#include <iostream>
+#include <vector>
+long const modulo = 1000000007;
+
+int main()
+{
+	// There is a pattern in this problem.
+	// Thus we can directly get a value from previous value (DP).
+	// let's say we need to get a sum of substrings of 162.
+	// substring of 1 is 1 ==> newly added = 1
+	// substrings of 16 are 1 / 16, 6 ==> newly added = 1 * 10 + 6 * 2 = 22
+	// substrings of 162 are 1, 16, 6 / 162 , 62, 2 ==> newly added = 22 * 10 + 2 * 2 == 226
+
+	std::string n("");
+	std::cin >> n;
+	long sum(0);
+	std::vector<long> totalAddedArray(n.size());
+	std::vector<long> newlyAddedArray(n.size());
+
+	totalAddedArray[0] = n[0] - '0';
+	newlyAddedArray[0] = n[0] - '0';
+
+	for (int i = 1; i < n.size(); ++i)
+	{
+		newlyAddedArray[i] = (newlyAddedArray[i - 1] * 10 + ((n[i] - '0') * (i + 1))) % modulo;
+		totalAddedArray[i] = (newlyAddedArray[i] + totalAddedArray[i - 1]) % modulo;
+	}
+
+	std::cout << totalAddedArray[n.size()-1] << std::endl;
+}
+
+
+
+
