@@ -1,110 +1,166 @@
-const n = 3;
-const s = 1;
-const a = 2;
-const b = 3;
-
-const fares = [
-  [1, 2, 10],
-  [1, 3, 3],
-  [2, 3, 5],
+const x = 14;
+const space = [
+  557976423,
+  2296438,
+  909198393,
+  443549744,
+  247744036,
+  541382867,
+  610964275,
+  909198393,
+  909198399,
+  888777816,
+  909198401,
+  290509795,
+  909198410,
+  909198400,
+  909198419,
+  909198416,
+  909198421,
+  275575612,
+  748910329,
+  588294902,
+  909198420,
+  15627292,
+  909198429,
+  909198435,
+  909198434,
+  751073506,
+  909198431,
+  572987961,
+  909198425,
+  499342890,
+  909198440,
+  909198437,
+  909198441,
+  359474765,
+  283966497,
+  909198447,
+  909198443,
+  909198439,
+  909198449,
+  909198449,
+  994817311,
+  154197786,
+  994817302,
+  994817313,
+  382723064,
+  994817310,
+  994817312,
+  994817307,
+  314442235,
+  994817304,
+  773472376,
+  301013741,
+  994817308,
+  994817312,
+  994817313,
+  847879120,
+  296955284,
+  994817317,
+  994817318,
+  910553541,
+  451808250,
+  768362539,
+  994817317,
+  909053907,
+  994817315,
+  994817306,
+  590283269,
+  994817319,
+  994817325,
+  595415821,
+  994817323,
+  994817331,
+  774733873,
+  944700079,
+  994817331,
+  178470168,
+  994817334,
+  994817339,
+  280314110,
+  130279016,
+  994817336,
+  994817345,
+  994817352,
+  994817343,
+  994817351,
+  994817352,
+  994817357,
+  994817364,
+  712485851,
+  637763857,
+  8061097,
+  994817369,
+  994817364,
+  594875430,
+  994817376,
+  994817379,
+  573597298,
+  994817389,
+  82375803,
+  994817399,
 ];
+// const x = 10;
+// const space = [10, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+// const x = 1;
+// const space = [1, 1000000000];
+// const x = 1;
+// const space = [1, 2, 3, 1, 2];
+// const x = 3;
+// const space = [2, 5, 4, 6, 8];
 
-console.log(solution(n, s, a, b, fares));
-
-function solution(n, s, a, b, input_fares) {
-  const fares = new Array(n + 1).fill(0).map(() => new Array(n + 1).fill(-1));
-  input_fares.forEach((fare) => {
-    const from = fare[0];
-    const to = fare[1];
-    const price = fare[2];
-
-    fares[from][to] = price;
-    fares[to][from] = price;
+function findMinNextMin(arr) {
+  const MAX = 1000000001;
+  let min = MAX;
+  let minIdx = 0;
+  let nextMin = MAX;
+  let nextMinIdx = 0;
+  arr.forEach((val, idx) => {
+    if (val < min) {
+      min = val;
+      minIdx = idx;
+    } else if (val < nextMin) {
+      nextMin = val;
+      nextMinIdx = idx;
+    }
   });
-
-  // 각 지점에서 A, B까지의 최단거리를 구함
-  const shortestPathA = [Number.MAX_SAFE_INTEGER];
-  const shortestPathB = [Number.MAX_SAFE_INTEGER];
-  let shortestPathFromStarting = [];
-  for (let i = 1; i < n + 1; ++i) {
-    const hasVisited = new Array(n + 1).fill(false);
-    const hasCompleted = new Array(n + 1).fill(false);
-    const minCosts = new Array(n + 1).fill(Number.MAX_SAFE_INTEGER);
-
-    const queue = [];
-    queue.push(i);
-    minCosts[i] = 0;
-    hasVisited[i] = true;
-
-    while (queue.length) {
-      const node = nextNode(queue, hasCompleted, minCosts);
-      queue.splice(queue.indexOf(node), 1);
-      //   console.log(fares[node]);
-      fares[node].forEach((connectedNodes, idx) => {
-        if (connectedNodes > 0 && !hasVisited[idx]) {
-          queue.push(idx);
-          hasVisited[idx] = true;
-        }
-        if (connectedNodes > 0) {
-          minCosts[idx] =
-            minCosts[idx] > minCosts[node] + connectedNodes
-              ? minCosts[node] + connectedNodes
-              : minCosts[idx];
-        }
-      });
-
-      hasCompleted[node] = true;
-    }
-
-    if (0 <= minCosts[a] && minCosts[a] < Number.MAX_SAFE_INTEGER)
-      shortestPathA.push(minCosts[a]);
-    else {
-      shortestPathA.push(Number.MAX_SAFE_INTEGER);
-    }
-    if (0 <= minCosts[b] && minCosts[b] < Number.MAX_SAFE_INTEGER)
-      shortestPathB.push(minCosts[b]);
-    else {
-      shortestPathB.push(Number.MAX_SAFE_INTEGER);
-    }
-
-    if (i === s) {
-      shortestPathFromStarting = minCosts;
-    }
-  }
-  console.log(shortestPathA);
-  console.log(shortestPathB);
-  console.log(shortestPathFromStarting);
-
-  // 출발 지점에서 함께 움직일 때
-  let min = 100000000;
-  for (let i = 1; i < n + 1; ++i) {
-    const compareVal =
-      shortestPathFromStarting[i] + shortestPathA[i] + shortestPathB[i];
-
-    if (min > compareVal) {
-      min = compareVal;
-      console.log(
-        'values',
-        shortestPathFromStarting[i],
-        shortestPathA[i - 1],
-        shortestPathB[i - 1]
+  return [min, minIdx, nextMin, nextMinIdx];
+}
+function segment(x, space) {
+  // Write your code here
+  const MAX = 1000000001;
+  const length = space.length;
+  let leftIdx = 0;
+  let rightIdx = x;
+  let ans = 0;
+  let [min, minIdx, nextMin, nextMinIdx] = [-1, -1, -1, -1];
+  while (rightIdx <= length) {
+    leftIdx = rightIdx - x;
+    if (minIdx < leftIdx) {
+      [min, minIdx, nextMin, nextMinIdx] = findMinNextMin(
+        space.slice(leftIdx, rightIdx),
       );
-      console.log(i, compareVal);
+      minIdx += leftIdx;
+      nextMinIdx += leftIdx;
+    } else {
+      if (min > space[rightIdx]) {
+        nextMin = min;
+        nextMinIdx = minIdx;
+
+        min = space[rightIdx];
+        minIdx = rightIdx;
+      } else if (nextMin < MAX && nextMin > space[rightIdx]) {
+        nextMin = space[rightIdx];
+        nextMinIdx = rightIdx;
+      }
     }
+
+    ans = ans > min ? ans : min;
+    rightIdx++;
   }
 
-  return min;
+  return ans;
 }
 
-function nextNode(queue, hasCompleted, minDist) {
-  let min = Number.MAX_SAFE_INTEGER;
-  let index;
-  queue.forEach((idx) => {
-    if (!hasCompleted[idx] && minDist[idx] < min) {
-      min = minDist[idx];
-      index = idx;
-    }
-  });
-
-  return index;
-}
+console.log(segment(x, space));
